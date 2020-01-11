@@ -1,12 +1,31 @@
 require 'sinatra/base'
 require './lib/player'
 require './lib/game'
+require './lib/attack'
 
   class Battle < Sinatra::Base
     enable :sessions
 
     get '/' do
       erb :index
+    end
+
+    get '/attack' do
+      @game = $game
+      erb :attack, :locals => {:game => $game}
+    end
+
+    post 'attack' do
+      Attack.run($game.opponent_of($game.current_turn))
+      if $game.game_over?
+      else
+        redirect '/attack'
+      end
+    end
+
+    get '/game-over' do
+      @game = $game
+      erb :game_over
     end
 
     post '/names' do
@@ -20,11 +39,7 @@ require './lib/game'
       erb :play, :locals => {:game => $game}
     end
 
-    get '/attack' do
-      @game = $game
-      @game.attack(@game.opponent_of(@game.current_turn))
-      erb :attack, :locals => {:game => $game}
-    end
+
 
     post '/switch-turns' do
       $game.switch_turns

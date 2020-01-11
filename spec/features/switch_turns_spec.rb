@@ -7,8 +7,7 @@ feature 'Start game' do
 
   scenario 'after player 1 attacks' do
     visit_site
-    click_button 'Attack'
-    click_button 'OK'
+    attack_then_ok
     expect(page).not_to have_content "Dave's turn"
     expect(page).to have_content "It is currently Kittens's turn"
   end
